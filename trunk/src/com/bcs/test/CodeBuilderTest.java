@@ -58,7 +58,7 @@ public class CodeBuilderTest {
 		});
 		
 		buildConfig = new ProjectBuildConfig(projectConfig);
-		buildConfig.setTableName("Sys_UserInfo");
+		buildConfig.setTableName("Sys_UserInfo"); 
 	}
 
 }
