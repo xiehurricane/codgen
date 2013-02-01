@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE codgen-config PUBLIC "-//Apache Software Foundation//DTD Tengen Configuration 1.0//EN" "com/bcs/codgen/resources/codgen-config_1_0.dtd">
+<codgen-config>
+	<project name="HZWY" label="惠州行政服务" outputEncoding="GBK">
+		<dbProvider class="com.bcs.codgen.service.impl.Sql2005Provider">
+			<jdbcConfig>
+				<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+				<url>jdbc:sqlserver://192.168.2.49\SQLSERVER2005;DatabaseName=hzwy_hz;selectMethod=cursor</url>
+				<user>sa</user>
+				<password>sa</password>
+			</jdbcConfig>
+			<columnHandler class="com.bcs.codgen.service.impl.DataTypeConverterForCS"/>
+		</dbProvider>
+		
+		<dataModel name="templateDirectory">template/HZWY</dataModel>
+		<dataModel name="outputDirectory">D:/QtoneProject/TengenCode/${outputDirectory}/${copyright.author}/${projectName}</dataModel>
+		<dataModel name="NamespaceModel">QtoneHZWY.Model.${groupName}</dataModel>
+		<dataModel name="NamespaceParam">QtoneHZWY.Param.${groupName}</dataModel>
+		<dataModel name="NamespaceDao">Qtone.HZWY.ModelDAO.${groupName}</dataModel>
+		<dataModel name="NamespacePages">QtoneHZWY.${groupName}</dataModel>
+		
+<!--		<output name="Model">${outputDirectory}/Qtone.HZWY/Model/${groupName}/${moduleName?cap_first}.cs</output>-->
+<!--		<output name="Param">${outputDirectory}/Qtone.HZWY/Param/${groupName}/${moduleName?cap_first}Param.cs</output>-->
+<!--		<output name="Dao">${outputDirectory}/Qtone.HZWY/ModelDAO/${groupName}/${moduleName?cap_first}Dao.cs</output>-->
+<!--		<output name="IbatisMap">${outputDirectory}/Qtone.HZWY/Map/${tableName}.xml</output>-->
+<!--		<output name="ListPage">${outputDirectory}/Web/${groupName}/${moduleName?cap_first}List.aspx</output>-->
+<!--		<output name="ListPageCs">${outputDirectory}/Web/${groupName}/${moduleName?cap_first}List.aspx.cs</output>-->
+<!--		<output name="EditPage">${outputDirectory}/Web/${groupName}/${moduleName?cap_first}Edit.aspx</output>-->
+<!--		<output name="EditPageCs">${outputDirectory}/Web/${groupName}/${moduleName?cap_first}Edit.aspx.cs</output>-->
+<!--		<output name="ViewPage">${outputDirectory}/Web/${groupName}/${moduleName?cap_first}View.aspx</output>-->
+<!--		<output name="ViewPageCs">${outputDirectory}/Web/${groupName}/${moduleName?cap_first}View.aspx.cs</output>-->
+	</project>
+	<project name="AOWork" label="工程验收" outputEncoding="GBK" isDefault="true" extends="defaultProject">
+		<dbProvider class="com.bcs.codgen.service.impl.Sql2005Provider">
+			<jdbcConfig>
+				<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+<!--				<url>jdbc:sqlserver://127.0.0.1\SQL2005;DatabaseName=MUCM_DG;selectMethod=cursor</url>-->
+<!--				<user>sa</user>-->
+<!--				<password>sa</password>-->
+				<url>jdbc:sqlserver://192.168.2.169;DatabaseName=MUCM;selectMethod=cursor</url>
+				<user>mucm</user>
+				<password>mucm</password>
+			</jdbcConfig>
+			<columnHandler class="com.bcs.codgen.service.impl.DataTypeConverterForJava"/>
+		</dbProvider>
+		
+		<dataModel name="templateDirectory">template/AOWork</dataModel>
+		<dataModel name="outputDirectory">D:/QtoneProject/TengenCode/${copyright.author}/${projectName}</dataModel>
+		<dataModel name="NamespaceModel" >com.qtone.aow.model.${groupName}</dataModel>
+		<dataModel name="NamespaceParam">com.qtone.aow.model.${groupName}</dataModel>
+		<dataModel name="NamespaceDao">com.qtone.aow.dao.${groupName}</dataModel>
+		<dataModel name="NamespaceDaoImpl">com.qtone.aow.dao.${groupName}</dataModel>
+		<dataModel name="NamespaceBll">com.qtone.aow.bll.${groupName}</dataModel>
+		<dataModel name="NamespaceBllImpl">com.qtone.aow.bll.${groupName}</dataModel>
+		<dataModel name="NamespaceApp">com.qtone.aow.app.${groupName}</dataModel>
+				
+		<template name="tDao" type="file">dao.ftl</template>
+		
+		<output name="Model" type="text" templateText="${defaultJavaModel}" ></output>
+		<output name="Param" type="text" templateFile="Param.ftl" ></output>
+		<output name="Dao" type="text" templateName="tDao"></output>
+		<output name="DaoImpl" type="text"></output>
+		<output name="Bll" type="file" templateFile="template/AOWork/Bll">${outputDirectory}/Bll.java</output>
+		<output name="BllImpl" type="file">${outputDirectory}/BllImpl.java</output>
+	</project>
+	<project label="Oracle测试项目" name="testForOracle10g" outputEncoding="GBK" isDefault="true" extends="defaultProject">
+		<dbProvider class="com.bcs.codgen.service.impl.OracleProvider">
+			<jdbcConfig>
+				<driver>oracle.jdbc.driver.OracleDriver</driver>
+				<url>jdbc:oracle:thin:@192.168.2.49:1521:orcl</url>
+				<user>test</user>
+				<password>orcl</password>
+			</jdbcConfig>
+			<columnHandler class="com.bcs.codgen.service.impl.DataTypeConverterForJava"/>
+		</dbProvider>
+		
+		<output name="javaModel" type="text" templateText="${defaultJavaModel}" ></output>
+	</project>
+</codgen-config>

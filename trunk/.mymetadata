@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="codgen"
+  id="myeclipse.1356157243390"
+  context-root="/codgen"
+  j2ee-spec="5.0"
+  archive="codgen.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
