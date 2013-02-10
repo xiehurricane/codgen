@@ -1,5 +1,6 @@
 package com.bcs.codgen.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -67,6 +68,10 @@ public class ProjectBuildConfig implements BuildConfig {
 	 * 数据模型键：默认的模板文件夹
 	 */
 	public final static String DMK_TEMPLATEDIRECTORY = "templateDirectory";
+	/**
+	 * 数据模型键：默认的输出文件夹
+	 */
+	public final static String DMK_OUTPUTDIRECTORY = "outputDirectory";
 	
 	private ProjectConfig projectConfig;
 	private Map<String,Object> dataModelMap = new LinkedHashMap<String,Object>();
@@ -184,6 +189,7 @@ public class ProjectBuildConfig implements BuildConfig {
 		dataModelMap.put(DMK_PROJECT_NAME, projectConfig.getProjectName());		
 		dataModelMap.put(DMK_PROJECT_LABEL, projectConfig.getProjectLabel());
 		dataModelMap.put(DMK_OUTPUT_ENCODING, projectConfig.getOutputEncoding());
+		dataModelMap.put(DMK_OUTPUTDIRECTORY, getDefaultOutputDirectory());
 		
 		//创建表模型	
 		if(StringUtils.isBlank(getTableName())){
@@ -244,23 +250,34 @@ public class ProjectBuildConfig implements BuildConfig {
 		
 		getDataModel(); //确保已经获取数据模型
 		
-		String templateFile,outputFile;
+		String templateFilename,outputFilename;
 		OutputModel outputModel;
 		for(Entry<String,OutputModel> entry: projectConfig.getOutputMap().entrySet()){
 			outputModel = entry.getValue();
 			
-			templateFile = outputModel.getTemplateModel().getTemplate();
-			if(templateFile.contains("${")){
-				templateFile = BuilderHelper.parseBuildParams(dataModelMap, templateFile); //解析带有构建参数的模板
+			templateFilename = outputModel.getTemplateModel().getTemplate();
+			if(templateFilename.contains("${")){
+				templateFilename = BuilderHelper.parseBuildParams(dataModelMap, templateFilename); //解析带有构建参数的模板
 			}
 			
 			if(entry.getValue().getTemplateModel().getType()==InOutType.FILE){
-				templateFile = formatTemplateFilename(templateFile);
+				templateFilename = formatTemplateFilename(templateFilename);
 			}
 			
-			outputFile = outputModel.getOutput();
-			if(StringUtils.isNotBlank(outputFile) && outputFile.contains("${")){
-				outputFile = BuilderHelper.parseBuildParams(dataModelMap, outputFile); //解析带有构建参数的输出路径
+			outputFilename = outputModel.getOutput();
+			if(StringUtils.isNotBlank(outputFilename)){
+				if(outputFilename.contains("${")){
+					outputFilename = BuilderHelper.parseBuildParams(dataModelMap, outputFilename); //解析带有构建参数的输出路径
+				}
+				//如果不是绝对路径，则当作是相对默认输出路径的相对路径
+				if(outputFilename.contains(":")==false){
+					String outputDirectory = dataModelMap.get(DMK_OUTPUTDIRECTORY).toString().replace("\\", "/");
+					if(outputDirectory.endsWith("/")==false){
+						outputDirectory += "/";
+					}
+					outputFilename = outputDirectory + outputFilename; 
+					outputFilename = FilenameUtil.normalize(outputFilename);
+				}
 			}
 			try {
 				outputModel = outputModel.deepClone();
@@ -271,11 +288,20 @@ public class ProjectBuildConfig implements BuildConfig {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			outputModel.getTemplateModel().setTemplate(templateFile);
-			outputModel.setOutput(outputFile);
+			outputModel.getTemplateModel().setTemplate(templateFilename);
+			outputModel.setOutput(outputFilename);
 			outputModelMap.put(outputModel.getName(), outputModel);
 		}
 		return outputModelMap;
+	}
+	
+	/**
+	 * 取得系统默认的输出目录为：System.getProperty("user.dir")
+	 * @return
+	 */
+	private String getDefaultOutputDirectory(){
+		String defaultPath = System.getProperty("user.dir");
+		return defaultPath;
 	}
 
 	/**
